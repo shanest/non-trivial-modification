@@ -57,7 +57,7 @@ def run_trial(trial_num,
     num_urns_s1 = num_preds if s1pred else num_states
     sender1 = np.ones((num_urns_s1, num_s1))
 
-    num_s2 = num_strengths
+    num_s2 = num_strengths * num_preds
     s2_msgs = list(range(num_s2))
     # obj, msg1 --> msg2 prob
     sender2 = np.ones((num_states, num_s1, num_s2))
@@ -152,12 +152,12 @@ def run_experiment(exp):
         # this from happening
         exp['conditions'][condition]['strength_weights'] = [
             exp['conditions'][condition]['strength_weights']]
-        pd.DataFrame(exp['conditions'][condition][base]).to_csv(base + '/params.csv')
+        pd.DataFrame(exp['conditions'][condition]).to_csv(base + '/params.csv')
 
 
 if __name__ == '__main__':
 
     np.random.seed(1234)
     # TODO: argparse instead of / in addition to exp configs?
-    for exp in experiments.all_exps:
-        run_experiment(exp)
+    # for exp in experiments.all_exps:
+    run_experiment(experiments.exp1)
