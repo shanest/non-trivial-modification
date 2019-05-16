@@ -54,8 +54,6 @@ def run_trial(trial_num,
     s1_msgs = list(range(num_s1))
 
     # TODO: generalize num_preds part here for general fn on state space?
-    # TODO: sender1 gets pred ===> modification, but if gets state ===>
-    # intersection; that could be the story
     num_urns_s1 = num_preds if s1pred else num_states
     sender1 = np.ones((num_urns_s1, num_s1))
 
@@ -76,8 +74,6 @@ def run_trial(trial_num,
         pred = np.random.choice(preds)
         state_id = np.random.choice(state_idxs, p=pred_prob_vectors[pred])
 
-        # TODO: get this same pattern but with sender1 seeing the entire state,
-        # not just the predator.  is it possible???
         s1urn = sender1[pred] if s1pred else sender1[state_id]
         msg1 = np.random.choice(s1_msgs, p=s1urn/sum(s1urn))
 
