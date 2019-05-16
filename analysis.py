@@ -13,6 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 import numpy as np
 import pandas as pd
+from plotnine import *
 import experiments
 
 
@@ -30,16 +31,32 @@ def gather_conditions(exp):
     return pd.concat(all_res, ignore_index=True)
 
 
-def full_analysis(exp, group_vars=['s1pred', 'correct_id']):
-    results = gather_conditions(exp)
+def descriptives(results, group_vars=['s1pred', 'correct_id'], out_file=None):
     grouped = results.groupby(['name'] + group_vars)
     descriptives = grouped[['name', 'correct', 'reward']].describe()
     # reshape
     descriptives = descriptives.stack(0).reset_index()
-    descriptives = descriptives.rename(columns={'level_1': 'measure'})
-    descriptives['95_ci'] = (1.96 * descriptives['std'] /
+    descriptives = descriptives.rename(columns={'level_3': 'measure'})
+    descriptives['ci'] = (1.96 * descriptives['std'] /
                              np.sqrt(descriptives['count']))
     print(descriptives)
+    plot = ggplot(descriptives,
+                 aes(x='correct_id', fill='s1pred'))
+    plot += geom_col(aes(y='mean'), position=position_dodge(0.75), width=0.75)# , position='dodge')
+    plot += geom_errorbar(
+        aes(ymin='mean - ci', ymax='mean + ci'),
+        width=0.1,
+        position=position_dodge(0.75))
+    plot += facet_wrap('measure')
+    if out_file:
+        plot.save(out_file, width=9, height=6, dpi=300)
+    else:
+        print(plot)
+
+
+def full_analysis(exp, group_vars=['s1pred', 'correct_id']):
+    results = gather_conditions(exp)
+    descriptives(results, group_vars, 'descriptives.png')
 
 
 if __name__ == '__main__':
