@@ -145,9 +145,11 @@ def run_experiment(config):
             results[-1].update({'trial_num': trial})
         # write results and parametes
         pd.DataFrame(results).to_csv(base + '/all_trials.csv')
-        # TODO: bug-fix: since strength_weights is a list and the rest are
+        # NOTE: this is a hack: since strength_weights is a list and the rest are
         # scalars, pandas makes this DataFrame have multiple rows, one for each
-        # value in strength_weights
+        # value in strength_weights; wrapping it inside another list prevents
+        # this from happening
+        config[base]['strength_weights'] = [config[base]['strength_weights']]
         pd.DataFrame(config[base]).to_csv(base + '/params.csv')
 
 
