@@ -40,16 +40,24 @@ def descriptives(results, group_vars=['s1pred', 'correct_id'], out_file=None):
     descriptives['ci'] = (1.96 * descriptives['std'] /
                              np.sqrt(descriptives['count']))
     print(descriptives)
-    plot = ggplot(descriptives,
+    # TODO: rename variables; here? in main/exp? elsewhere?
+    plot = ggplot(descriptives[descriptives['measure'] == 'correct'],
                  aes(x='correct_id', fill='s1pred'))
+    """
     plot += geom_col(aes(y='mean'), position=position_dodge(0.75), width=0.75)# , position='dodge')
     plot += geom_errorbar(
         aes(ymin='mean - ci', ymax='mean + ci'),
         width=0.1,
         position=position_dodge(0.75))
-    plot += facet_wrap('measure')
+    """
+    plot += geom_line(aes(y='mean', group='s1pred', color='s1pred'))
+    plot += geom_point(aes(y='mean', color='s1pred'))
+    plot += geom_errorbar(
+        aes(ymin='mean - ci', ymax='mean + ci', color='s1pred'),
+        width=0.05)
+    # plot += facet_wrap('measure')
     if out_file:
-        plot.save(out_file, width=9, height=6, dpi=300)
+        plot.save(out_file, width=8, height=6, dpi=300)
     else:
         print(plot)
 
