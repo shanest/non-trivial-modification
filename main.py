@@ -155,6 +155,7 @@ def run_experiment(config):
 
 if __name__ == '__main__':
 
+    np.random.seed(1234)
     # TODO: argparse instead of / in addition to exp configs?
     for exp in experiments.all_exps:
         run_experiment(exp)

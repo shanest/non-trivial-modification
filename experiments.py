@@ -12,7 +12,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
-exp1_base = {'num_trials': 3,
+exp1_base = {'num_trials': 50,
              'num_preds': 2,
              'num_strengths': 2,
              'pos_reward': 1.0,
@@ -20,7 +20,8 @@ exp1_base = {'num_trials': 3,
              'pred_cost': 0.0,
              'm2cost': 0.2,
              'strength_weights': [1.0, 2.0],
-             'num_iters': 5000}
+             'num_iters': 25000}
+# TODO: refactor so that these four dicts are in conditions, plus an exp name
 exp1 = {
     'exp1/s1pred-correct_id': dict(
         exp1_base, **{'s1pred': True, 'correct_id': True}),
