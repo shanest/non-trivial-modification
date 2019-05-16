@@ -135,12 +135,13 @@ def run_trial(trial_num,
             for col in ['correct', 'reward']}
 
 
-def run_experiment(config):
-    for base in config:
+def run_experiment(exp):
+    for condition in exp['conditions']:
+        base = exp['name'] + '/' + condition
         results = []
-        for trial in range(config[base]['num_trials']):
+        for trial in range(exp['conditions'][condition]['num_trials']):
             results.append(
-                run_trial(trial, out_dir=base, **config[base])
+                run_trial(trial, out_dir=base, **exp['conditions'][condition])
             )
             results[-1].update({'trial_num': trial})
         # write results and parametes
@@ -149,8 +150,9 @@ def run_experiment(config):
         # scalars, pandas makes this DataFrame have multiple rows, one for each
         # value in strength_weights; wrapping it inside another list prevents
         # this from happening
-        config[base]['strength_weights'] = [config[base]['strength_weights']]
-        pd.DataFrame(config[base]).to_csv(base + '/params.csv')
+        exp['conditions'][condition]['strength_weights'] = [
+            exp['conditions'][condition]['strength_weights']]
+        pd.DataFrame(exp['conditions'][condition][base]).to_csv(base + '/params.csv')
 
 
 if __name__ == '__main__':

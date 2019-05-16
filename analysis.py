@@ -15,18 +15,20 @@ import numpy as np
 import pandas as pd
 from plotnine import *
 import experiments
+import glob
 
 
 def gather_conditions(exp):
     all_res = []
-    for base in exp:
+    for condition in exp['conditions']:
+        base = exp['name'] + '/' + condition
         results = pd.read_csv(base + '/all_trials.csv')
         # read params, and make it have as many rows as results
         params = pd.concat(
             [pd.read_csv(base + '/params.csv')]*len(results),
             ignore_index=True)
         combined = pd.concat([results, params], axis=1)
-        combined['name'] = base
+        combined['name'] = condition
         all_res.append(combined)
     return pd.concat(all_res, ignore_index=True)
 
@@ -62,12 +64,22 @@ def descriptives(results, group_vars=['s1pred', 'correct_id'], out_file=None):
         print(plot)
 
 
+def measure_nontrivial(exp):
+    for condition in exp['conditions']:
+        filenames = ['{}/{}/trial_{}_sender2.npy'.format(
+            exp['name'], condition, trial)
+            for trial in range(exp['conditions'][condition]['num_trials'])]
+        print(filenames)
+    pass
+
+
 def full_analysis(exp, group_vars=['s1pred', 'correct_id']):
     results = gather_conditions(exp)
-    descriptives(results, group_vars, 'descriptives.png')
+    descriptives(results, group_vars, exp['name'] + '/descriptives.png')
 
 
 if __name__ == '__main__':
 
     for exp in experiments.all_exps:
+        measure_nontrivial(exp)
         full_analysis(exp)

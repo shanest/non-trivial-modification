@@ -21,16 +21,18 @@ exp1_base = {'num_trials': 50,
              'm2cost': 0.2,
              'strength_weights': [1.0, 2.0],
              'num_iters': 25000}
-# TODO: refactor so that these four dicts are in conditions, plus an exp name
 exp1 = {
-    'exp1/s1pred-correct_id': dict(
-        exp1_base, **{'s1pred': True, 'correct_id': True}),
-    'exp1/s1pred-no_correct_id': dict(
-        exp1_base, **{'s1pred': True, 'correct_id': False}),
-    'exp1/no_s1pred-correct_id': dict(
-        exp1_base, **{'s1pred': False, 'correct_id': True}),
-    'exp1/no_s1pred-no_correct_id': dict(
-        exp1_base, **{'s1pred': False, 'correct_id': False}),
+    'name': 'exp1t',
+    'conditions': {
+        's1pred-correct_id': dict(
+            exp1_base, **{'s1pred': True, 'correct_id': True}),
+        's1pred-no_correct_id': dict(
+            exp1_base, **{'s1pred': True, 'correct_id': False}),
+        'no_s1pred-correct_id': dict(
+            exp1_base, **{'s1pred': False, 'correct_id': True}),
+        'no_s1pred-no_correct_id': dict(
+            exp1_base, **{'s1pred': False, 'correct_id': False}),
+    }
 }
 
 all_exps = [exp1]
