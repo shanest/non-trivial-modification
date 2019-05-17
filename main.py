@@ -24,19 +24,20 @@ def prob_vector(states, pred, weights):
     return weight_values / sum(weight_values)
 
 
-def assign_rewards(reward, pairs, eps=1e-6):
+def assign_rewards(reward, pairs, lateral=0.0, eps=1e-6):
     # *args: pairs of (urn, choice)
     for urn, choice in pairs:
-        urn[choice] += reward
-        if urn[choice] <= 0:
-            urn[choice] = eps
+        urn -= lateral
+        urn[choice] += (reward + lateral)
+        # min at epsilon
+        urn[urn <= 0] = eps
 
 
 def run_trial(trial_num,
               num_preds=2, num_strengths=2, pos_reward=1.0, neg_reward=0.0,
               pred_cost=0.0, m2cost=0.0, strength_weights=[1.0, 2.0],
               s1pred=True, correct_id=False,
-              num_iters=50000, num_eval=2000, out_dir='exp',
+              num_iters=50000, num_eval=2000, out_dir='exp', lateral=0.0,
               **kwargs):  # kwargs just b/c how run_experiment calls this
 
     preds = list(range(num_preds))
@@ -100,7 +101,8 @@ def run_trial(trial_num,
             # reinforce
             assign_rewards(reward,
                            zip([s1urn, s2urn, r1urn],
-                               [msg1, msg2, state_guess]))
+                               [msg1, msg2, state_guess]),
+                           lateral=lateral)
         else:
             # evaluating
             eval_trials.append(
